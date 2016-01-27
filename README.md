@@ -1,2 +1,0 @@
-# MyCodingRes
-myself projects code
