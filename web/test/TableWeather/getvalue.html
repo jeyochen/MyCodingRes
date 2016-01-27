@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>无标题文档</title>
+<style type="text/css">
+	.btn{border:dotted; 
+	height:40px; 
+	font-size:18px; 
+	font-family:Arial, Helvetica, sans-serif; 
+	background-color:#99CC99;
+	}
+	
+	#btn2{border:inset;
+	height:40;
+	border-bottom-color:#000000;
+	border-bottom-style:dashed;
+	font-size:16px;
+	background-color:#66FFCC;
+	}
+	
+	.txt{width:120;
+	height:60;
+	font-size:36px;
+	font-style:normal;
+	font-weight:100;
+	background-color:#66FFCC;
+	color:#FF0000;
+	}
+	
+	.divstyel{
+	
+	width:400px;
+	height:300px;
+	border:solid;
+	background-color:#CCCCCC;
+	border-left-color:#0000FF;
+	border-bottom-color:#FF0033;
+	float:left;
+	}
+</style>
+</head>
+<script type="text/javascript">
+	function GetValue(){
+		alert(document.getElementById("name").value);
+	}
+</script>
+<body>
+	<input type="text" id="name" value="tom" />
+	<button onclick="GetValue();" class="btn">获取输入值</button>
+	<button onclick="GetValue();" id="btn2">按钮样式</button>
+	<input type="text" class="txt" /><br />
+	<div class="divstyel">ddddddddd</div>
+	<div class="divstyel">eeeeeeeee</div>
+</body>
+</html>

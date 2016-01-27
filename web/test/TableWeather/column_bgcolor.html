@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>无标题文档</title>
+
+</head>
+
+<script>
+function cells_color(){
+var oColor,td=event.srcElement
+if(td.tagName!="TD") //如果事件不是发生在单元格上，退出函数
+    return
+if(event.type=="mouseover") //判断事件类型，决定单元格改变的颜色
+    oColor="#dedede"
+else 
+    oColor="#ffffff"
+tb=td.parentElement.parentElement  //单元格的上两级对象为表格
+//遍历表格的所有行，设置相应单元格的背景颜色
+for(var i=0;i<tb.rows.length;i++)  
+    tb.rows[i].cells[td.cellIndex].bgColor=oColor
+}
+</script>
+<table width="200" height="30" border="1" onmouseover="cells_color()" onmouseout="cells_color()">
+  <tr>
+    <td>demo</td>
+    <td>demo</td>
+    <td>demo</td>
+  </tr>
+  <tr>
+    <td>demo</td>
+    <td>demo</td>
+    <td>demo</td>
+  </tr>
+  <tr>
+    <td>demo</td>
+    <td>demo</td>
+    <td>demo</td>
+  </tr>
+</table>
+</html>
