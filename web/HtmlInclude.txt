@@ -1,0 +1,40 @@
+<!-- leftmenu.inc -->
+<div style="border:1px solid blue; width:200px; min-height: 600px;">
+  <ul>
+      <li><a href="#">link1</a></li>
+      <li><a href="#">link1</a></li>
+      <li><a href="#">link1</a></li>
+      <li><a href="#">link1</a></li>
+      <li><a href="#">link1</a></li>
+      <li><a href="#">link1</a></li>
+      <li><a href="#">link1</a></li>
+      <li><a href="#">link1</a></li>
+      <li><a href="#">link1</a></li>
+      <li><a href="#">link1</a></li>
+      <li><a href="#">link1</a></li>
+  </ul>
+</div>
+
+
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="main.aspx.cs" Inherits="WebAppTest.main" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+</head>
+<body>
+    <form id="form1" runat="server">
+    <div>
+        <div style="float:left;">
+            <!--#include file="leftmenu.inc"-->
+        </div>
+        <div style="border:1px solid yellow; width:600px; float:left;min-height:600px;">
+
+        </div>
+    </div>
+    </form>
+</body>
+</html>

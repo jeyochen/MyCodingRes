@@ -1,0 +1,21 @@
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>javascript执行dos命令</title>
+    <script type="text/javascript">
+        function f(){
+            var   s=new ActiveXObject("wscript.shell");//创建windows对象
+            //s.Run("cmd");//执行命令
+            s.Run("c:\\hello.bat");
+        }
+    </script>
+</head>
+<body>
+<div>
+<!--
+写个hello.bat文件，内容如下：
+@start http://www.0379zd.com
+-->
+</div>
+<input type="button" onclick="f();" value="ok" />
+</body>
+</html>
