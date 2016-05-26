@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="proto">
+      <UniqueIdentifier>{1d65f515-9899-438e-924e-873ba52157b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net">
+      <UniqueIdentifier>{083e91b6-bc5f-4411-965a-777bb0ebe432}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MainApp.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="proto\DataMessage.pb.h">
+      <Filter>proto</Filter>
+    </ClInclude>
+    <ClInclude Include="log\CCriticalSection.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="log\CLog.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="config\inifile.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="threads\ListenThread.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="threads\CollectThread.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="threads\ExecCmdThread.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="threads\SendThread.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="serialdevice\SerialDevice.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="net\TcpClient.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\MsgStruct.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="serialdevice\SixLine.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="proto\CollectDatatMessage.pb.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\common.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="serialdevice\TemperHumiCtrl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\typedef.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="device\SerialDevice.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="device\SixLine.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="device\TemperHumiCtrl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="device\LinuxHostDevice.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="device\SK811_UDP_DLL.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="device\ShikeAlarmDevice.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="device\UpsDevice.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="MainApp.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="proto\DataMessage.pb.cc">
+      <Filter>proto</Filter>
+    </ClCompile>
+    <ClCompile Include="log\CCriticalSection.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="log\CLog.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="config\inifile.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="threads\ListenThread.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="threads\CollectThread.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="threads\ExecCmdThread.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="threads\SendThread.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="serialdevice\SerialDevice.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="net\TcpClient.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="common\MsgStruct.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="serialdevice\SixLine.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="proto\CollectDatatMessage.pb.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="serialdevice\TemperHumiCtrl.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="device\SerialDevice.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="device\SixLine.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="device\TemperHumiCtrl.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="device\LinuxHostDevice.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="device\ShikeAlarmDevice.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="device\UpsDevice.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
