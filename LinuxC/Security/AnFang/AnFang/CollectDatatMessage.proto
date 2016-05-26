@@ -1,0 +1,62 @@
+package COLLECT_DATA;
+
+// 六路开关电流值
+message MSixLineDC{
+	repeated float line_dc = 1;
+}
+
+// 六路开关状态
+message MSixLineStatus{
+	repeated bool line_status = 1;
+}
+
+// 温湿度值
+message MTemperHumidityValue{
+	optional float  temperature  = 1; //温度值
+	optional float  humidity     = 2; //湿度值
+}
+
+// cup负载
+message MCpuLoad{
+	optional int32 load          = 1; // cpu 使用率
+}
+
+// 内存信息
+message MMemInfo{
+	optional int64 total         = 1; // 物理内存
+	optional int64 free          = 2; // 空闲内存
+	optional float usage         = 3; // 使用率
+}
+
+// 磁盘item
+message MDiskInfoItem{
+	optional  float space         = 1; // 容量
+	optional  float used          = 2; // 已用
+	optional  float available     = 3; // 可用
+	optional  float usage         = 4; // 使用率
+	optional  string mount_point  = 5; // 挂载点
+}
+
+// 磁盘信息
+message MDiskInfo{
+	repeated MDiskInfoItem diskinfo = 1; // 磁盘信息
+}
+
+
+// 防区状态item
+message MFangquStatusItem{
+	optional int32  status        =1; // 布防状态， 1：正常， 2:告警
+}
+
+// 时刻报警主item
+message MSKHostInfoItem{
+	optional string ip             =1; // 主机地址
+	optional int32 host_status     =2; // 整机布撤防状态1为布防，0为撤防
+	optional int32 fangqu_type     =3; // 8防区，16防区， 32 防区
+	repeated MFangquStatusItem fangqu_status = 4; // 防区状态
+}
+
+// 时刻报警主机信息
+message MSKHostInfos{
+	repeated MSKHostInfoItem sk_alarm  = 1;
+}

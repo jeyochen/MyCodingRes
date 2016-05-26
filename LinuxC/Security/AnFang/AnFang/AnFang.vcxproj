@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{F6E4C6C7-2406-4C96-AECF-B8CFF66F6340}</ProjectGuid>
+    <RootNamespace>AnFang</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>D:\联众科技\Sources\3rd\pbuf2.5\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>D:\联众科技\Sources\3rd\pbuf2.5\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libprotobufd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>D:\联众科技\Sources\3rd\pbuf2.5\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>D:\联众科技\Sources\3rd\pbuf2.5\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libprotobuf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="common\common.h" />
+    <ClInclude Include="common\MsgStruct.h" />
+    <ClInclude Include="common\typedef.h" />
+    <ClInclude Include="device\LinuxHostDevice.h" />
+    <ClInclude Include="device\SerialDevice.h" />
+    <ClInclude Include="device\SixLine.h" />
+    <ClInclude Include="device\SK811_UDP_DLL.h" />
+    <ClInclude Include="device\TemperHumiCtrl.h" />
+    <ClInclude Include="proto\CollectDatatMessage.pb.h" />
+    <ClInclude Include="serialdevice\SerialDevice.h" />
+    <ClInclude Include="net\TcpClient.h" />
+    <ClInclude Include="serialdevice\SixLine.h" />
+    <ClInclude Include="serialdevice\TemperHumiCtrl.h" />
+    <ClInclude Include="device\ShikeAlarmDevice.h" />
+    <ClInclude Include="threads\SendThread.h" />
+    <ClInclude Include="threads\ExecCmdThread.h" />
+    <ClInclude Include="threads\CollectThread.h" />
+    <ClInclude Include="config\inifile.h" />
+    <ClInclude Include="threads\ListenThread.h" />
+    <ClInclude Include="log\CCriticalSection.h" />
+    <ClInclude Include="log\CLog.h" />
+    <ClInclude Include="MainApp.h" />
+    <ClInclude Include="proto\DataMessage.pb.h" />
+    <ClInclude Include="device\UpsDevice.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="common\MsgStruct.cpp" />
+    <ClCompile Include="device\LinuxHostDevice.cpp" />
+    <ClCompile Include="device\SerialDevice.cpp" />
+    <ClCompile Include="device\SixLine.cpp" />
+    <ClCompile Include="device\TemperHumiCtrl.cpp" />
+    <ClCompile Include="proto\CollectDatatMessage.pb.cc" />
+    <ClCompile Include="serialdevice\SerialDevice.cpp" />
+    <ClCompile Include="net\TcpClient.cpp" />
+    <ClCompile Include="serialdevice\SixLine.cpp" />
+    <ClCompile Include="serialdevice\TemperHumiCtrl.cpp" />
+    <ClCompile Include="device\ShikeAlarmDevice.cpp" />
+    <ClCompile Include="threads\SendThread.cpp" />
+    <ClCompile Include="threads\ExecCmdThread.cpp" />
+    <ClCompile Include="threads\CollectThread.cpp" />
+    <ClCompile Include="config\inifile.cpp" />
+    <ClCompile Include="threads\ListenThread.cpp" />
+    <ClCompile Include="log\CCriticalSection.cpp" />
+    <ClCompile Include="log\CLog.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="MainApp.cpp" />
+    <ClCompile Include="proto\DataMessage.pb.cc" />
+    <ClCompile Include="device\UpsDevice.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

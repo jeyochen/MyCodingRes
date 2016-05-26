@@ -1,0 +1,44 @@
+package AFPROC;
+
+
+// JAVA端下发的执行指令
+message MCommand {
+	required int32 d_type            = 1; //设备类型
+	required int32 d_address         = 2; //设备地址
+	required int32 cmd_class         = 3; //命令分类：1 定时执行，2 实时执行
+	required int32 cmd_func          = 4; //指令功能 如：采集六路开关电流，采集六路开关状态
+	required string execommand       = 5; //指令
+	optional string dcode            = 6; //唯一设备编码，业务系统生成并告知客户端
+	
+	optional int32  sk_hostno_h      = 7; // 时刻主机编号高字节
+	optional int32  sk_hostno_l      = 8; // 时刻主机编号第字节
+	optional int32  sk_host_group    = 9; // 时刻主机组号
+	optional int32  sk_fangqu_no     = 10; // 时刻主机防区号
+	optional string ip               = 11; // 时刻主机ip
+	optional int32 port              = 12; // 时刻主机端口号
+	optional int32 fd                = 13; // C++程序用于存放客户端的连接句柄
+}
+
+// C端执行指令后返回给JAVA端的请求
+message MRequest {
+	required int32 d_type            = 1; //设备类型
+	required int32 d_address         = 2; //设备地址
+	required int32 cmd_class         = 3; //命令分类：1 定时执行，2 实时执行
+	required int32 cmd_func          = 4; //指令功能 如：采集六路开关电流，采集六路开关状态
+	required string execommand       = 5; //指令
+	optional string dcode            = 6; //唯一设备编码，业务系统生成并告知客户端
+	required string m_body           = 7; //消息体
+	optional string token            = 8; //客户端token
+	optional string seq_num          = 9; //发送序列编码
+	optional int32 fd                = 10; // C++程序用户存放客户端的连接句柄
+	optional int32 from_type         = 11; // 数据的来源类型 ：1：定时采集， 2实时采集
+}
+
+// JAVA收到执行指令的响应后给C端的响应
+message MResponse {		
+	required string resp_code        = 1; //状态响应码
+	optional string resp_message     = 2; //状态响应详细信息
+	optional string seq_num          = 3; //发送序列编码
+}
+
+
