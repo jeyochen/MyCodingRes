@@ -1,0 +1,374 @@
+#include "StdAfx.h"
+#include "MySerialPort.h"
+#include "LZSerialPortTool.h"
+#include "LZSerialPortToolDlg.h"
+
+#include "Log.h"
+
+// 显示提示信息
+#define  SHOWTIP ((CLZSerialPortToolDlg*)(theApp.m_pMainWnd))->ShowTipMessage
+
+CMySerialPort::CMySerialPort(void)
+    :m_strComName("")
+    ,m_baud(BAUD_9600)
+    ,m_check(NOPARITY )
+    ,m_databits(8)
+    ,m_stopbits(1)
+    ,m_portHandle(INVALID_HANDLE_VALUE)
+    ,m_peerHandle(INVALID_HANDLE_VALUE)
+{
+}
+
+
+CMySerialPort::~CMySerialPort(void)
+{
+    ClosePort();
+}
+
+// 初始化化串口参数
+bool CMySerialPort::InitSerialParam(CString& com, DWORD baud, 
+    int check, int databits, int stopbits)
+{
+    if (0 >= com.GetLength())
+    {
+        CString strTip = "串口名称不能为空";
+        SHOWTIP(strTip);
+        return false;
+    }
+
+    if (0 > com.Find("COM"))
+    {
+        CString strTip = "串口名称不正确";
+        SHOWTIP(strTip);
+        return false;
+    }
+
+    m_strComName = com;
+    m_baud = baud;
+    m_check = check;
+    m_databits = databits;
+    m_stopbits = stopbits;
+
+    // 初始化临界资源
+    InitializeCriticalSection(&m_readSection);
+    InitializeCriticalSection(&m_writeSection);
+
+    if (m_osRead.hEvent)
+    {
+        ResetEvent(m_osRead.hEvent);
+    }
+    else 
+    {
+        m_osRead.hEvent = CreateEvent(NULL, TRUE, TRUE, NULL);
+    }
+
+    if (m_osWrite.hEvent)
+    {
+        ResetEvent(m_osWrite.hEvent);
+    }
+    else 
+    {
+        m_osWrite.hEvent = CreateEvent(NULL, TRUE, TRUE, NULL);
+    }
+
+    return true;
+}
+
+// 打开串口
+HANDLE CMySerialPort::OpenPort()
+{
+    if (IsOpen())
+    {
+        return m_portHandle;
+    }
+
+    if (0 >= m_strComName.GetLength())
+    {
+        CString strTip = "请先设置串口参数";
+        SHOWTIP(strTip);
+        return INVALID_HANDLE_VALUE;
+    }
+
+    // 以重叠方式打开串口
+    m_strComName = "\\\\.\\" + m_strComName;
+    m_portHandle = CreateFile(m_strComName,
+        GENERIC_READ|GENERIC_WRITE,
+        0,
+        NULL,
+        OPEN_EXISTING,
+        FILE_FLAG_OVERLAPPED,
+        NULL);
+
+    if (INVALID_HANDLE_VALUE == m_portHandle)
+    {
+        CString strTip;
+        strTip.Format("打开串口[%s]失败", m_strComName);
+        SHOWTIP(strTip);
+        return INVALID_HANDLE_VALUE;
+    }
+
+    // 设置串口参数
+    DCB dcb;
+    BOOL ret = GetCommState(m_portHandle, &dcb);
+    if (FALSE == ret)
+    {
+        CString strTip("获取串口默认配置参数失败");
+        SHOWTIP(strTip);
+        return INVALID_HANDLE_VALUE;
+    }
+    dcb.BaudRate = m_baud;
+    dcb.StopBits = m_stopbits;
+    dcb.Parity = m_check;
+    dcb.ByteSize = m_databits;
+    //dcb.fParity = FALSE; // 禁止奇偶检查
+    //dcb.fBinary = TRUE;//是否允许传二进制 
+    if (FALSE == SetCommState(m_portHandle,&dcb))
+    {
+        CString strTip("配置串口参数失败!");
+        SHOWTIP(strTip);
+        return INVALID_HANDLE_VALUE;
+    }
+    
+    // 设置缓冲区大小
+    if (FALSE == SetupComm(m_portHandle, 1024, 1024))
+    {
+        CString strTip("缓冲区设置失败!");
+        SHOWTIP(strTip);
+        return INVALID_HANDLE_VALUE;
+    }
+
+    // 设置串口超时时间
+    COMMTIMEOUTS CommTimeOuts;
+    CommTimeOuts.ReadIntervalTimeout = 100;
+    CommTimeOuts.ReadTotalTimeoutMultiplier = 100;
+    CommTimeOuts.ReadTotalTimeoutConstant = 100;
+
+    CommTimeOuts.WriteTotalTimeoutMultiplier = 1000;
+    CommTimeOuts.WriteTotalTimeoutConstant = 2000;
+    if(false == SetCommTimeouts(m_portHandle,&CommTimeOuts))
+    {
+        CString strTip("设置读写超时时间失败!");
+        SHOWTIP(strTip);
+        return INVALID_HANDLE_VALUE;
+    }
+
+    // 清空发送和接收缓冲区
+    PurgeComm(m_portHandle, PURGE_TXCLEAR|PURGE_RXCLEAR);
+
+    return m_portHandle;
+}
+
+// 串口是否已打开
+bool CMySerialPort::IsOpen()
+{
+    return m_portHandle != INVALID_HANDLE_VALUE;
+}
+
+// 获取串口名称
+CString CMySerialPort::GetPortName()
+{
+    return m_strComName;
+}
+
+// 读数据
+DWORD CMySerialPort::ReadData(CString& strRead, DWORD readlen)
+{
+    // 读缓冲
+    char lpInBuffer[1024] = {0};
+    // 本次需要读取的字节数
+    DWORD dwBytesRead = readlen;
+    COMSTAT comStat;
+    DWORD dwErrorFlags;
+
+    if (false == IsOpen())
+    {
+        LOG.err_log("串口未打开");
+        return -1;
+    }
+
+    if (0 >= readlen)
+    {
+        LOG.warn_log("要读取的字节数必须大于0");
+        return 0;
+    }
+    
+    BOOL bReadStatus = FALSE; // 读取状态
+    DWORD dwReaded = 0; // 实际读取的字节数
+    static int cnt = 0; // 连续3次都不到数据返回。
+    while(dwBytesRead > 0)
+    {
+        EnterCriticalSection(&m_readSection);
+        memset( &m_osRead, 0, sizeof(m_osRead) );
+        if (NULL != m_osRead.hEvent)
+        {
+            ResetEvent(m_osRead.hEvent);
+            m_osRead.hEvent = CreateEvent(NULL, TRUE, TRUE, NULL);
+        }
+
+        // 清除错误
+        ClearCommError(m_portHandle, &dwErrorFlags, &comStat);
+        // 本次可读取的字节数
+        DWORD dwAbleRead = min(sizeof(lpInBuffer), (DWORD)comStat.cbInQue);
+
+        if (0 >= dwAbleRead)
+        {
+            if(++cnt  > 3)
+            {
+                LeaveCriticalSection(&m_readSection);
+                return readlen - dwBytesRead;
+            }
+            Sleep(100);
+            continue;
+        }
+        cnt = 0;
+
+        bReadStatus = ReadFile(m_portHandle, lpInBuffer,
+            dwAbleRead, &dwReaded, &m_osRead); // &m_osRead);
+
+        if(!bReadStatus) //如果ReadFile函数返回FALSE
+        {
+            if (GetLastError() == ERROR_IO_PENDING)
+            {
+                // 最多等待3秒
+                WaitForSingleObject(m_osRead.hEvent, 3000 /*INFINITE*/);
+                // 异步操作完成后返回
+                GetOverlappedResult(m_portHandle, &m_osWrite, &dwReaded, TRUE);
+                /*if (dwAbleRead != dwReaded && dwReaded > 0)
+                {
+                dwBytesRead -= dwReaded;
+                }*/
+            }
+            else
+            {
+                PurgeComm(m_portHandle, PURGE_TXABORT|
+                    PURGE_RXABORT|PURGE_TXCLEAR|PURGE_RXCLEAR);
+                LeaveCriticalSection(&m_readSection);
+                return  readlen - dwBytesRead;
+            }
+            
+        }
+        strRead += lpInBuffer;
+        memset(lpInBuffer, 0, sizeof(lpInBuffer));
+        dwBytesRead -= dwReaded;
+    }
+    EnterCriticalSection(&m_readSection);
+
+    PurgeComm(m_portHandle, PURGE_TXABORT|
+        PURGE_RXABORT|PURGE_TXCLEAR|PURGE_RXCLEAR);
+
+    return readlen - dwBytesRead;
+}
+
+// 写数据
+DWORD CMySerialPort::WriteData(CString& data, DWORD sendlen)
+{
+    char buffer[1024] = {0};
+    DWORD dwBytesWritten = sendlen;
+    DWORD dwErrorFlags;
+    COMSTAT comStat;
+
+    if (false == PeerIsValid())
+    {
+        LOG.err_log("请设置有效的目的串口!");
+        return -1;
+    }
+
+    if (0 >= sendlen)
+    {
+        LOG.err_log("要发送的字节数必须大于0");
+    }
+    
+    sprintf_s(buffer, sizeof(buffer), "%s", (LPCSTR)data);
+
+    BOOL bWriteStat = FALSE; // 发送状态
+    DWORD dwWritedLen = 0; // 实际发送的字节数
+
+    while(dwBytesWritten > 0)
+    {
+        EnterCriticalSection(&m_writeSection);
+        ClearCommError(m_peerHandle, &dwErrorFlags,&comStat);
+
+        memset( &m_osWrite, 0, sizeof(m_osWrite) );
+        if(NULL != m_osWrite.hEvent)
+        {
+            ResetEvent(m_osWrite.hEvent);
+            m_osWrite.hEvent = CreateEvent( NULL, TRUE, TRUE, NULL );
+        }
+
+        bWriteStat = WriteFile(m_peerHandle, buffer, dwBytesWritten,
+            &dwWritedLen, &m_osWrite);
+
+        if(!bWriteStat)
+        {
+            if (GetLastError() == ERROR_IO_PENDING)
+            {
+                WaitForSingleObject(m_osWrite.hEvent, 3000);
+                GetOverlappedResult(m_peerHandle, &m_osWrite, &dwWritedLen, TRUE);
+                /*if (dwBytesWritten != dwWritedLen && dwWritedLen > 0)
+                {
+                    dwBytesWritten -= dwWritedLen;
+                }*/
+            }
+            else
+            {
+                PurgeComm(m_peerHandle, PURGE_TXABORT|
+                    PURGE_RXABORT|PURGE_TXCLEAR|PURGE_RXCLEAR);
+                LeaveCriticalSection(&m_writeSection);
+                return sendlen - dwBytesWritten;
+            }
+        }
+
+        dwBytesWritten -= dwWritedLen;
+    }
+    
+    LeaveCriticalSection(&m_writeSection);
+    return sendlen - dwBytesWritten;
+}
+
+// 关闭端口
+bool CMySerialPort::ClosePort()
+{
+    if (IsOpen())
+    {
+        CloseHandle(m_portHandle);
+        m_portHandle = INVALID_HANDLE_VALUE;
+        m_peerHandle = INVALID_HANDLE_VALUE;
+    }
+
+    if (NULL != m_osRead.hEvent)
+    {
+        ResetEvent(m_osRead.hEvent);
+    }
+
+    if (NULL != m_osWrite.hEvent)
+    {
+        ResetEvent(m_osWrite.hEvent);
+    }
+    return true;
+}
+
+// 设置发送目标串口
+bool CMySerialPort::SetPeerPort(HANDLE handle)
+{
+    //if (INVALID_HANDLE_VALUE == handle || NULL == handle)
+    //{
+    //    SHOWTIP("SetPeerPort 失败,handle不是有效的值");
+    //    return false;
+    //}
+    m_peerHandle = handle;
+
+    return true;
+}
+
+// 判读对端串口是否有效
+bool CMySerialPort::PeerIsValid()
+{
+    return m_peerHandle != INVALID_HANDLE_VALUE;
+}
+
+// 设置串口handle
+bool CMySerialPort::SetPortHandle(HANDLE handle)
+{
+    m_portHandle = handle;
+    return true;
+}
